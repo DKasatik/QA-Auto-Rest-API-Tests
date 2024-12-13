@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "f9d3c36d-019d-42bb-8bf6-0a07cc1f0bd4",
+		"name": "HW15.1 Hvozdinskyi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27261897"
+	},
+	"item": [
+		{
+			"name": "signup_DDT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"console.log(\"POST response code:\", pm.response.code);\r",
+							"\r",
+							"if (pm.response.code === 400) {\r",
+							"    console.log(\"Skipping PUT request.\");\r",
+							"    pm.execution.setNextRequest(null); \r",
+							"} else {\r",
+							"    console.log(\"Continuing to PUT request.\");\r",
+							"    pm.variables.set(\"skipPutRequest\", false);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let password = pm.variables.replaceIn('{{$randomPassword}}');\r",
+							"pm.variables.set('password', password);\r",
+							"\r",
+							"if (pm.iterationData.get(\"url\")) {\r",
+							"    pm.variables.set(\"url\", pm.iterationData.get(\"url\"));\r",
+							"} else if (pm.environment.get(\"env_type\") === \"PROD\") {\r",
+							"    pm.variables.set(\"url\", \"https://qauto.forstudy.space/api/\");\r",
+							"} else if (pm.environment.get(\"env_type\") === \"DEV\") {\r",
+							"    pm.variables.set(\"url\", \"https://qauto2.forstudy.space/api/\");\r",
+							"} else {\r",
+							"    console.error(\"URL not defined in iteration data or environment variables.\");\r",
+							"}\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"{{name_data}}\",\n  \"lastName\": \"{{lastName_data}}\",\n  \"email\": \"{{$randomEmail}}\",\n  \"password\": \"{{password}}\",\n  \"repeatPassword\": \"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}auth/signup",
+					"host": [
+						"{{url}}auth"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validateProfile_DDT",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (pm.variables.get(\"skipPutRequest\") === true) {\r",
+							"    pm.execution.setNextRequest(null); \r",
+							"} else {\r",
+							"    if (pm.iterationData.get(\"url\")) {\r",
+							"        pm.variables.set(\"url\", pm.iterationData.get(\"url\")); \r",
+							"    } else if (pm.environment.get(\"env_type\") === \"PROD\") {\r",
+							"        pm.variables.set(\"url\", \"https://qauto.forstudy.space/api/\");\r",
+							"    } else if (pm.environment.get(\"env_type\") === \"DEV\") {\r",
+							"        pm.variables.set(\"url\", \"https://qauto2.forstudy.space/api/\");\r",
+							"    } else {\r",
+							"        console.error(\"URL not defined in iteration data or environment variables.\");\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"{{name_data2}}\",\n  \"lastName\": \"{{lastName_data2}}\",\n  \"dateBirth\": \"{{dateBirth_data}}\",\n  \"country\": \"{{country_data}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}users/profile",
+					"host": [
+						"{{url}}users"
+					],
+					"path": [
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
